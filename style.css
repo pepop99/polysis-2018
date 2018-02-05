@@ -300,6 +300,11 @@ input[type='submit']
 		transition: transform .3s ease-in-out;
 	}
 
+	.legend{
+		background: white;
+		border: none;
+	}
+
 	.hamburger{
 		position: absolute;
 		background: rgba(206, 213, 234, 0.8);
