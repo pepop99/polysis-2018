@@ -1,48 +1,32 @@
 //code for logic starts here
 
+var baseurl = 'http://192.168.43.255:8000';//baseurl for all requests made
+
 //status codes for questions - [0=>current,1=>attempted,2=>visited,but not attempted,3=>unvisited]
-var questions = [
-  {
-    statement:'This is statement of Q1',
-    options:['1','2','3','4'],
-    type:"Type1",
-    status:0
+
+$.ajax({
+  type:'GET',
+  url: baseurl+'/questions',
+  complete:function(xhr,textstatus){
+    console.log(xhr);
   },
-  {
-    statement:'This is statement of Q2',
-    options:['1','2','3','4'],
-    type:"Type2",
-    status:1
-  },
-  {
-    statement:'This is statement of Q3',
-    options:['1','2','3','4'],
-    type:"Type3",
-    status:2
-  },
-  {
-    statement:'This is statement of Q4',
-    options:['1','2','3','4'],
-    type:"Type4",
-    status:3
-  },
-  {
-    statement:'This is statement of Q5',
-    options:['1','2','3','4'],
-    type:"Type1",
-    status:3
+  error:function(xhr,textstatus,err){
+    console.log(err);
   }
-];//object that stores questions with their options and their current status
+});
+
+var questions = [];//object that stores questions with their options and their current status
 
 var numberOfQuestions = questions.length;
 
 var typesOfQuestion = [];
 
-for(i=0;i<numberOfQuestions;i++){
+for(i=0;i<numberOfQuestions;i++){//filling the typesOfQuestion array
   if(typesOfQuestion.indexOf(questions[i].type)<0) typesOfQuestion[typesOfQuestion.length] = questions[i].type;
 }
 
 var currentQuesNo;//keeps track of the current question number
+
 var prevQuesStatus = 0;//keeps track of the status of question on which the user was before he clicked a new question => status of current question before its status became "current"
 
 //creating elements in hamburger
@@ -245,5 +229,14 @@ function ham(){
   }
 
 document.getElementsByClassName("begin-button")[0].addEventListener("click", begin);
-document.getElementsByClassName("begin-button")[0].addEventListener("click", timer);
+//document.getElementsByClassName("begin-button")[0].addEventListener("click", timer);
 document.getElementsByClassName("back")[0].addEventListener("click", ham);
+
+
+function onSignIn(googleUser) {
+  var profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
