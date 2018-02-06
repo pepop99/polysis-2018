@@ -1,17 +1,17 @@
 //code for logic starts here
 
-var baseurl = 'http://192.168.43.14:8000';//baseurl for all requests made
+var baseurl = 'http://192.168.43.180:8000';//baseurl for all requests made
 
-//status codes for questions - [0=>current,1=>attempted,2=>visited,but not attempted,3=>unvisited]
-window.onload = function(){//request sent everytime the page loads
+function onSignIn(googleUser) {
   $.ajax({
     type:'POST',
-    url: baseurl+'/quiz/update_timer/',
+    url: baseurl+'/quiz/authenticate/',
     data:{
-      time:800
+      id_token:googleUser.getAuthResponse().id_token
     },
     complete:function(xhr,textstatus){
       console.log(xhr);
+      location.href = "quiz/home/";
     },
     error:function(xhr,textstatus,err){
       console.log(err);
@@ -19,30 +19,48 @@ window.onload = function(){//request sent everytime the page loads
   });  
 }
 
-$.ajax({//request being used for login of the user
-  type:'POST',
-  url: baseurl+'/quiz/',
-  data:{
-    id_token:123
-  },
-  complete:function(xhr,textstatus){
-    console.log(xhr);
-  },
-  error:function(xhr,textstatus,err){
-    console.log(err);
-  }
-});
 
-$.ajax({//request for list of questions
-  type:'GET',
-  url: baseurl+'/quiz/question_list/',
-  complete:function(xhr,textstatus){
-    console.log(xhr);
-  },
-  error:function(xhr,textstatus,err){
-    console.log(err);
-  }
-});
+//status codes for questions - [0=>current,1=>attempted,2=>visited,but not attempted,3=>unvisited]
+// window.onload = function(){//request sent everytime the page loads
+//   $.ajax({
+//     type:'POST',
+//     url: baseurl+'/quiz/update_timer/',
+//     data:{
+//       time:800
+//     },
+//     complete:function(xhr,textstatus){
+//       console.log(xhr);
+//     },
+//     error:function(xhr,textstatus,err){
+//       console.log(err);
+//     }
+//   });  
+// }
+
+// $.ajax({//request being used for login of the user
+//   type:'POST',
+//   url: baseurl+'/quiz/',
+//   data:{
+//     id_token:123
+//   },
+//   complete:function(xhr,textstatus){
+//     console.log(xhr);
+//   },
+//   error:function(xhr,textstatus,err){
+//     console.log(err);
+//   }
+// });
+
+// $.ajax({//request for list of questions
+//   type:'GET',
+//   url: baseurl+'/quiz/question_list/',
+//   complete:function(xhr,textstatus){
+//     console.log(xhr);
+//   },
+//   error:function(xhr,textstatus,err){
+//     console.log(err);
+//   }
+// });
 
 
 
@@ -273,11 +291,3 @@ document.getElementsByClassName("begin-button")[0].addEventListener("click", beg
 //document.getElementsByClassName("begin-button")[0].addEventListener("click", timer);
 document.getElementsByClassName("back")[0].addEventListener("click", ham);
 
-
-function onSignIn(googleUser) {
-  var profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log('Name: ' + profile.getName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}
