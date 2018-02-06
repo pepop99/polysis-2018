@@ -1,12 +1,30 @@
 //code for logic starts here
 
-var baseurl = 'http://192.168.43.255:8000';//baseurl for all requests made
+var baseurl = 'http://192.168.43.14:8000';//baseurl for all requests made
 
 //status codes for questions - [0=>current,1=>attempted,2=>visited,but not attempted,3=>unvisited]
+window.onload = function(){//request sent everytime the page loads
+  $.ajax({
+    type:'POST',
+    url: baseurl+'/quiz/update_timer/',
+    data:{
+      time:800
+    },
+    complete:function(xhr,textstatus){
+      console.log(xhr);
+    },
+    error:function(xhr,textstatus,err){
+      console.log(err);
+    }
+  });  
+}
 
-$.ajax({
-  type:'GET',
-  url: baseurl+'/questions',
+$.ajax({//request being used for login of the user
+  type:'POST',
+  url: baseurl+'/quiz/',
+  data:{
+    id_token:123
+  },
   complete:function(xhr,textstatus){
     console.log(xhr);
   },
@@ -14,6 +32,30 @@ $.ajax({
     console.log(err);
   }
 });
+
+$.ajax({//request for list of questions
+  type:'GET',
+  url: baseurl+'/quiz/question_list/',
+  complete:function(xhr,textstatus){
+    console.log(xhr);
+  },
+  error:function(xhr,textstatus,err){
+    console.log(err);
+  }
+});
+
+
+
+// $.ajax({
+//   type:'GET',
+//   url: baseurl+'/quiz/',
+//   complete:function(xhr,textstatus){
+//     console.log(xhr);
+//   },
+//   error:function(xhr,textstatus,err){
+//     console.log(err);
+//   }
+// });
 
 var questions = [];//object that stores questions with their options and their current status
 
@@ -69,100 +111,99 @@ for(i=0;i<typesOfQuestion.length;i++){
   }
 }
 
-function updateQuestion(){
-  currentQuesInfo = questions[quesInHam[currentQuesNo-1]];
+// function updateQuestion(){
+//   currentQuesInfo = questions[quesInHam[currentQuesNo-1]];
 
-  document.getElementsByClassName("question")[0].innerHTML = currentQuesInfo.statement;
-  document.getElementsByClassName("question-number")[0].innerHTML = "Question "+currentQuesNo;
-  document.getElementsByClassName("type")[0].innerHTML = currentQuesInfo.type;
-}
+//   document.getElementsByClassName("question")[0].innerHTML = currentQuesInfo.statement;
+//   document.getElementsByClassName("question-number")[0].innerHTML = "Question "+currentQuesNo;
+//   document.getElementsByClassName("type")[0].innerHTML = currentQuesInfo.type;
+// }
 
-window.onload = updateQuestion;
+// window.onload = updateQuestion;
 
-function nextQuestion(){
+// function nextQuestion(){
   
 
-  updateQuestion();
-}
+//   updateQuestion();
+// }
 
-function prevQuestion(){//goes to previous question without saving the current selected option
-  if(prevQuesStatus == 0 || prevQuesStatus == 2 || prevQuesStatus == 3){
-    questions[quesInHam[currentQuesNo-1]].status = 2;
-    document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers visited";
-  }  
-  else{
-    questions[quesInHam[currentQuesNo-1]].status = 1;
-    document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers attempted";
-  }
+// function prevQuestion(){//goes to previous question without saving the current selected option
+//   if(prevQuesStatus == 0 || prevQuesStatus == 2 || prevQuesStatus == 3){
+//     questions[quesInHam[currentQuesNo-1]].status = 2;
+//     document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers visited";
+//   }  
+//   else{
+//     questions[quesInHam[currentQuesNo-1]].status = 1;
+//     document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers attempted";
+//   }
 
-  var quesNoPrev = currentQuesNo - 1;
+//   var quesNoPrev = currentQuesNo - 1;
 
-  if(quesNoPrev < 1) quesNoPrev = numberOfQuestions;
+//   if(quesNoPrev < 1) quesNoPrev = numberOfQuestions;
 
-  var initialStatusOfPrev = questions[quesInHam[quesNoPrev-1]].status;
+//   var initialStatusOfPrev = questions[quesInHam[quesNoPrev-1]].status;
 
-  prevQuesStatus = initialStatusOfPrev;
-  currentQuesNo = quesNoPrev;
-  questions[quesInHam[currentQuesNo-1]].status = 0;
-  document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers current";
+//   prevQuesStatus = initialStatusOfPrev;
+//   currentQuesNo = quesNoPrev;
+//   questions[quesInHam[currentQuesNo-1]].status = 0;
+//   document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers current";
 
-  updateQuestion();
-}
+//   updateQuestion();
+// }
 
-function skipQuestion(){//skip the current question irrespective of whether an option is selected or not
-  if(prevQuesStatus == 0 || prevQuesStatus == 2 || prevQuesStatus == 3){
-    questions[quesInHam[currentQuesNo-1]].status = 2;
-    document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers visited";
-  }  
-  else{
-    questions[quesInHam[currentQuesNo-1]].status = 1;
-    document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers attempted";
-  }
+// function skipQuestion(){//skip the current question irrespective of whether an option is selected or not
+//   if(prevQuesStatus == 0 || prevQuesStatus == 2 || prevQuesStatus == 3){
+//     questions[quesInHam[currentQuesNo-1]].status = 2;
+//     document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers visited";
+//   }  
+//   else{
+//     questions[quesInHam[currentQuesNo-1]].status = 1;
+//     document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers attempted";
+//   }
 
-  var quesNoNext = currentQuesNo + 1;
+//   var quesNoNext = currentQuesNo + 1;
 
-  if(quesNoNext > numberOfQuestions) quesNoNext = 1;
+//   if(quesNoNext > numberOfQuestions) quesNoNext = 1;
 
-  var initialStatusOfNext = questions[quesInHam[quesNoNext-1]].status;
+//   var initialStatusOfNext = questions[quesInHam[quesNoNext-1]].status;
 
-  prevQuesStatus = initialStatusOfNext;
-  currentQuesNo = quesNoNext;
-  questions[quesInHam[currentQuesNo-1]].status = 0;
-  document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers current";
+//   prevQuesStatus = initialStatusOfNext;
+//   currentQuesNo = quesNoNext;
+//   questions[quesInHam[currentQuesNo-1]].status = 0;
+//   document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers current";
 
-  updateQuestion();
-}
+//   updateQuestion();
+// }
 
-function goToQuesNo(e){//goes to selected question number without saving the current selected option
-  if(prevQuesStatus == 0 || prevQuesStatus == 2 || prevQuesStatus == 3){
-    questions[quesInHam[currentQuesNo-1]].status = 2;
-    document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers visited";
-  }  
-  else{
-    questions[quesInHam[currentQuesNo-1]].status = 1;
-    document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers attempted";
-  }
+// function goToQuesNo(e){//goes to selected question number without saving the current selected option
+//   if(prevQuesStatus == 0 || prevQuesStatus == 2 || prevQuesStatus == 3){
+//     questions[quesInHam[currentQuesNo-1]].status = 2;
+//     document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers visited";
+//   }  
+//   else{
+//     questions[quesInHam[currentQuesNo-1]].status = 1;
+//     document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers attempted";
+//   }
 
-  var quesNoClicked = Array.from(document.getElementsByClassName("ham-numbers")).indexOf(e.target) + 1;
-  var initialStatusOfClicked = questions[quesInHam[quesNoClicked-1]].status;
+//   var quesNoClicked = Array.from(document.getElementsByClassName("ham-numbers")).indexOf(e.target) + 1;
+//   var initialStatusOfClicked = questions[quesInHam[quesNoClicked-1]].status;
 
-  prevQuesStatus = initialStatusOfClicked;
-  currentQuesNo = quesNoClicked;
-  questions[quesInHam[currentQuesNo-1]].status = 0;
-  document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers current";
+//   prevQuesStatus = initialStatusOfClicked;
+//   currentQuesNo = quesNoClicked;
+//   questions[quesInHam[currentQuesNo-1]].status = 0;
+//   document.getElementsByClassName("ham-numbers")[currentQuesNo-1].className = "ham-numbers current";
 
-  updateQuestion();
-}
+//   updateQuestion();
+// }
 
-for(i=0;i<numberOfQuestions;i++){
-  document.getElementsByClassName("ham-numbers")[i].addEventListener("click", goToQuesNo);
-}
+// for(i=0;i<numberOfQuestions;i++){
+//   document.getElementsByClassName("ham-numbers")[i].addEventListener("click", goToQuesNo);
+// }
 
 //code for logic ends here
 
 function begin(){
 	document.getElementsByClassName("main")[0].style.top = "0vh";
-	console.log(1);
 }
 
 var c=0;
